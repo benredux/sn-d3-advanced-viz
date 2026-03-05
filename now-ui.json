@@ -1,0 +1,431 @@
+{
+  "components": {
+    "sn-d3-sankey-diagram": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": ["global.core", "global.landing-page"],
+        "label": "D3 Sankey Diagram",
+        "icon": "diagram-pull-request-outline",
+        "description": "Flow diagram showing volume distribution through connected nodes — ideal for ticket routing, change flow, and process analysis.",
+        "category": "analytics"
+      },
+      "properties": {
+        "table": {
+          "description": "Source table for flow data",
+          "fieldType": "string",
+          "defaultValue": "incident",
+          "required": true
+        },
+        "sourceField": {
+          "description": "Field representing the source node (left side)",
+          "fieldType": "string",
+          "defaultValue": "category",
+          "required": true
+        },
+        "intermediateField": {
+          "description": "Field representing the intermediate node (middle)",
+          "fieldType": "string",
+          "defaultValue": "assignment_group",
+          "required": false
+        },
+        "targetField": {
+          "description": "Field representing the target node (right side)",
+          "fieldType": "string",
+          "defaultValue": "state",
+          "required": true
+        },
+        "valueAggregation": {
+          "description": "How to calculate link values",
+          "fieldType": "string",
+          "defaultValue": "count",
+          "schema": {
+            "type": "string",
+            "enum": ["count", "sum", "average"]
+          }
+        },
+        "valueField": {
+          "description": "Numeric field for sum/average aggregation (ignored for count)",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "encodedQuery": {
+          "description": "ServiceNow encoded query filter",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "maxNodes": {
+          "description": "Maximum number of nodes per column",
+          "fieldType": "integer",
+          "defaultValue": 10
+        },
+        "colorScheme": {
+          "description": "Color palette for nodes and links",
+          "fieldType": "string",
+          "defaultValue": "servicenow",
+          "schema": {
+            "type": "string",
+            "enum": ["servicenow", "categorical", "sequential", "diverging"]
+          }
+        },
+        "height": {
+          "description": "Component height in pixels",
+          "fieldType": "integer",
+          "defaultValue": 440
+        },
+        "showLabels": {
+          "description": "Display node labels",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        "showValues": {
+          "description": "Display values on hover tooltips",
+          "fieldType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "actions": {
+        "SN_D3_SANKEY#NODE_CLICKED": {
+          "description": "Dispatched when a sankey node is clicked",
+          "payload": {
+            "nodeName": { "type": "string" },
+            "nodeValue": { "type": "number" },
+            "column": { "type": "string" }
+          }
+        },
+        "SN_D3_SANKEY#LINK_CLICKED": {
+          "description": "Dispatched when a sankey link is clicked",
+          "payload": {
+            "sourceName": { "type": "string" },
+            "targetName": { "type": "string" },
+            "value": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "sn-d3-parallel-sets": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": ["global.core", "global.landing-page"],
+        "label": "D3 Parallel Sets",
+        "icon": "menu-outline",
+        "description": "Multi-dimensional categorical flow showing how records distribute across multiple attribute dimensions simultaneously.",
+        "category": "analytics"
+      },
+      "properties": {
+        "table": {
+          "description": "Source table for analysis",
+          "fieldType": "string",
+          "defaultValue": "incident",
+          "required": true
+        },
+        "dimensions": {
+          "description": "Ordered list of categorical fields to display as parallel axes (JSON array of field names)",
+          "fieldType": "string",
+          "defaultValue": "[\"priority\",\"category\",\"sla_due\",\"state\"]",
+          "required": true
+        },
+        "colorDimension": {
+          "description": "Which dimension to use for ribbon coloring",
+          "fieldType": "string",
+          "defaultValue": "priority"
+        },
+        "encodedQuery": {
+          "description": "ServiceNow encoded query filter",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "maxCategories": {
+          "description": "Maximum categories per dimension before grouping into 'Other'",
+          "fieldType": "integer",
+          "defaultValue": 8
+        },
+        "colorScheme": {
+          "description": "Color palette",
+          "fieldType": "string",
+          "defaultValue": "servicenow",
+          "schema": {
+            "type": "string",
+            "enum": ["servicenow", "categorical", "sequential"]
+          }
+        },
+        "height": {
+          "description": "Component height in pixels",
+          "fieldType": "integer",
+          "defaultValue": 440
+        }
+      },
+      "actions": {
+        "SN_D3_PARALLEL#RIBBON_CLICKED": {
+          "description": "Dispatched when a parallel sets ribbon is clicked",
+          "payload": {
+            "fromDimension": { "type": "string" },
+            "fromValue": { "type": "string" },
+            "toDimension": { "type": "string" },
+            "toValue": { "type": "string" },
+            "count": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "sn-d3-radial-sunburst": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": ["global.core", "global.landing-page"],
+        "label": "D3 Radial Sunburst",
+        "icon": "circle-fill",
+        "description": "Hierarchical radial chart for CMDB classes, organizational structures, or any tree-shaped data with proportional sizing.",
+        "category": "analytics"
+      },
+      "properties": {
+        "table": {
+          "description": "Source table (hierarchical data)",
+          "fieldType": "string",
+          "defaultValue": "cmdb_ci",
+          "required": true
+        },
+        "hierarchyFields": {
+          "description": "Ordered list of fields defining the hierarchy levels (JSON array)",
+          "fieldType": "string",
+          "defaultValue": "[\"sys_class_name\",\"subcategory\",\"name\"]",
+          "required": true
+        },
+        "valueField": {
+          "description": "Numeric field for ring sizing (leave empty for count-based)",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "encodedQuery": {
+          "description": "ServiceNow encoded query filter",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "maxDepth": {
+          "description": "Maximum hierarchy depth to render",
+          "fieldType": "integer",
+          "defaultValue": 4
+        },
+        "colorScheme": {
+          "description": "Color palette",
+          "fieldType": "string",
+          "defaultValue": "servicenow",
+          "schema": {
+            "type": "string",
+            "enum": ["servicenow", "categorical", "sequential"]
+          }
+        },
+        "centerLabel": {
+          "description": "Text label displayed in the center of the sunburst",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        "height": {
+          "description": "Component height in pixels",
+          "fieldType": "integer",
+          "defaultValue": 520
+        },
+        "enableZoom": {
+          "description": "Allow click-to-zoom into segments",
+          "fieldType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "actions": {
+        "SN_D3_RADIAL#SEGMENT_CLICKED": {
+          "description": "Dispatched when a sunburst segment is clicked",
+          "payload": {
+            "path": { "type": "string" },
+            "value": { "type": "number" },
+            "depth": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "sn-d3-edge-bundling": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": ["global.core", "global.landing-page"],
+        "label": "D3 Hierarchical Edge Bundling",
+        "icon": "connection-outline",
+        "description": "Circular dependency graph showing relationships between grouped entities — ideal for module integrations, service dependencies, and CI relationships.",
+        "category": "analytics"
+      },
+      "properties": {
+        "nodesTable": {
+          "description": "Table containing the entities (nodes)",
+          "fieldType": "string",
+          "defaultValue": "cmdb_ci_service",
+          "required": true
+        },
+        "groupField": {
+          "description": "Field used to group nodes into clusters around the ring",
+          "fieldType": "string",
+          "defaultValue": "service_classification",
+          "required": true
+        },
+        "labelField": {
+          "description": "Field used as the display label for each node",
+          "fieldType": "string",
+          "defaultValue": "name",
+          "required": true
+        },
+        "relationshipTable": {
+          "description": "Table containing the relationships (edges)",
+          "fieldType": "string",
+          "defaultValue": "cmdb_rel_ci",
+          "required": true
+        },
+        "parentField": {
+          "description": "Parent/source reference field on the relationship table",
+          "fieldType": "string",
+          "defaultValue": "parent",
+          "required": true
+        },
+        "childField": {
+          "description": "Child/target reference field on the relationship table",
+          "fieldType": "string",
+          "defaultValue": "child",
+          "required": true
+        },
+        "nodesEncodedQuery": {
+          "description": "Encoded query filter for the nodes table",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        "relsEncodedQuery": {
+          "description": "Encoded query filter for the relationships table",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        "bundleTension": {
+          "description": "Curve bundling tension (0 = straight lines, 1 = tight bundles)",
+          "fieldType": "number",
+          "defaultValue": 0.85
+        },
+        "height": {
+          "description": "Component height in pixels",
+          "fieldType": "integer",
+          "defaultValue": 560
+        },
+        "showTensionControl": {
+          "description": "Show the bundle tension slider to users",
+          "fieldType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "actions": {
+        "SN_D3_EDGE#NODE_CLICKED": {
+          "description": "Dispatched when an edge bundling node is clicked",
+          "payload": {
+            "nodeId": { "type": "string" },
+            "group": { "type": "string" },
+            "connectionCount": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "sn-d3-chord-diagram": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": ["global.core", "global.landing-page"],
+        "label": "D3 Chord Diagram",
+        "icon": "refresh-outline",
+        "description": "Circular matrix showing bidirectional interaction volumes between entities — ideal for cross-team collaboration, service dependencies, and communication patterns.",
+        "category": "analytics"
+      },
+      "properties": {
+        "table": {
+          "description": "Source table containing interaction records",
+          "fieldType": "string",
+          "defaultValue": "interaction",
+          "required": true
+        },
+        "sourceField": {
+          "description": "Field representing the source entity in each interaction",
+          "fieldType": "string",
+          "defaultValue": "assigned_to.department",
+          "required": true
+        },
+        "targetField": {
+          "description": "Field representing the target entity in each interaction",
+          "fieldType": "string",
+          "defaultValue": "opened_by.department",
+          "required": true
+        },
+        "valueAggregation": {
+          "description": "How to calculate chord thickness",
+          "fieldType": "string",
+          "defaultValue": "count",
+          "schema": {
+            "type": "string",
+            "enum": ["count", "sum", "average"]
+          }
+        },
+        "valueField": {
+          "description": "Numeric field for sum/average aggregation",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "encodedQuery": {
+          "description": "ServiceNow encoded query filter",
+          "fieldType": "string",
+          "defaultValue": "",
+          "required": false
+        },
+        "maxEntities": {
+          "description": "Maximum number of entities before grouping into 'Other'",
+          "fieldType": "integer",
+          "defaultValue": 12
+        },
+        "colorScheme": {
+          "description": "Color palette",
+          "fieldType": "string",
+          "defaultValue": "servicenow",
+          "schema": {
+            "type": "string",
+            "enum": ["servicenow", "categorical", "sequential"]
+          }
+        },
+        "height": {
+          "description": "Component height in pixels",
+          "fieldType": "integer",
+          "defaultValue": 540
+        },
+        "padAngle": {
+          "description": "Gap angle between chord groups in degrees",
+          "fieldType": "number",
+          "defaultValue": 0.04
+        }
+      },
+      "actions": {
+        "SN_D3_CHORD#GROUP_CLICKED": {
+          "description": "Dispatched when a chord group arc is clicked",
+          "payload": {
+            "entityName": { "type": "string" },
+            "totalValue": { "type": "number" }
+          }
+        },
+        "SN_D3_CHORD#RIBBON_CLICKED": {
+          "description": "Dispatched when a chord ribbon is clicked",
+          "payload": {
+            "sourceName": { "type": "string" },
+            "targetName": { "type": "string" },
+            "sourceToTargetValue": { "type": "number" },
+            "targetToSourceValue": { "type": "number" }
+          }
+        }
+      }
+    }
+  },
+
+  "scopeName": "x_snc_d3_adv_viz"
+}
